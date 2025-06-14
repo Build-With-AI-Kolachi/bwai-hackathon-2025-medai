@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "701206361339",
+    "project_id": "bistro-ai-be27e",
+    "storage_bucket": "bistro-ai-be27e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701206361339:android:535900ecf8a9a43eddec5e",
+        "android_client_info": {
+          "package_name": "com.devtrail.bistroai.smartrecipes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-aYuIrlBFP7GyD35BRPbYhu4YYlSBceY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701206361339:android:d7567e834e26fccaddec5e",
+        "android_client_info": {
+          "package_name": "com.example.agentic_app_manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-aYuIrlBFP7GyD35BRPbYhu4YYlSBceY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701206361339:android:e0d015d3e748c34fddec5e",
+        "android_client_info": {
+          "package_name": "com.example.doctai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-aYuIrlBFP7GyD35BRPbYhu4YYlSBceY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
