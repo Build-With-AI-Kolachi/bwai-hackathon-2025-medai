@@ -1,3 +1,4 @@
+import 'package:doctai/controllers/language_controller.dart';
 import 'package:doctai/view/agents/tools/tools.dart';
 import 'package:doctai/controllers/live_ai_calling_agent_controller.dart';
 import 'package:flutter/material.dart';
@@ -19,51 +20,29 @@ class MedAIHelpAssistantView extends StatefulWidget {
 }
 
 class _MedAIHelpAssistantViewState extends State<MedAIHelpAssistantView> {
-  final LiveGenerativeModel _liveModel =
-      FirebaseAI.vertexAI().liveGenerativeModel(
-    systemInstruction: Content.text('''
-      You are MedAI, a compassionate and knowledgeable healthcare assistant designed to help users with their medical needs. 
-      
-      Your primary functions include:
-      1. **Symptom Analysis**: Listen to symptoms and provide preliminary guidance, always emphasizing when to seek professional care
-      2. **Healthcare Navigation**: Help users find nearby medical facilities, pharmacies, and emergency services
-      3. **Medication Management**: Assist with pill identification, medication reminders, and basic drug information
-      4. **First Aid Guidance**: Provide step-by-step emergency first aid instructions
-      5. **Health Education**: Share preventive care information and health tips
-      6. **Emergency Support**: Recognize emergency situations and guide users to appropriate immediate care
-      
-      **Important Guidelines**:
-      - Always prioritize user safety and encourage professional medical consultation for serious symptoms
-      - Be culturally sensitive and support multiple languages (English, Urdu, Punjabi, Sindhi)
-      - For emergency situations, immediately guide users to call emergency services while providing first aid
-      - Never diagnose or replace professional medical advice - provide guidance and education only
-      - Be empathetic and reassuring, especially in emergency situations
-      - Always ask for confirmation before setting reminders or making changes
-      - Provide location-appropriate advice considering local healthcare systems
-      
-      **Emergency Recognition**: 
-      Immediately escalate and activate emergency protocols for: chest pain, difficulty breathing, severe bleeding, 
-      loss of consciousness, severe allergic reactions, signs of stroke, or any life-threatening situation.
-      
-      Use the available tools to help users effectively and always confirm actions before executing them.
-    '''),
-    model: 'gemini-2.0-flash-live-preview-04-09',
-    liveGenerationConfig: LiveGenerationConfig(
-      speechConfig: SpeechConfig(voiceName: 'fenrir'),
-      responseModalities: [ResponseModalities.audio],
-    ),
-    tools: [
-      Tool.functionDeclarations([
-        symptomCheckerTool,
-        nearbyHealthcareTool,
-        medicationReminderTool,
-        pillIdentifierTool,
-        firstAidGuidanceTool,
-        emergencyContactsTool,
-        healthEducationTool,
-      ]),
-    ],
-  );
+  LiveGenerativeModel? _liveModel;
+  void _initializeLiveModel() {
+    _liveModel = FirebaseAI.vertexAI().liveGenerativeModel(
+      systemInstruction:
+          Content.text(SystemInstructions.getInstruction(_currentLanguageCode)),
+      model: 'gemini-2.0-flash-live-preview-04-09',
+      liveGenerationConfig: LiveGenerationConfig(
+        speechConfig: SpeechConfig(voiceName: 'fenrir'),
+        responseModalities: [ResponseModalities.audio],
+      ),
+      tools: [
+        Tool.functionDeclarations([
+          symptomCheckerTool,
+          nearbyHealthcareTool,
+          medicationReminderTool,
+          pillIdentifierTool,
+          firstAidGuidanceTool,
+          emergencyContactsTool,
+          healthEducationTool,
+        ]),
+      ],
+    );
+  }
 
   late LiveSession _session;
   bool _settingUpSession = false;
@@ -75,11 +54,15 @@ class _MedAIHelpAssistantViewState extends State<MedAIHelpAssistantView> {
   late Stream<Uint8List> inputStream;
   late AudioSource? audioSrc;
   late SoundHandle handle;
-
+  String _currentLanguageCode = 'en';
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final languageProvider =
+          Provider.of<LanguageProvider>(context, listen: false);
+      _currentLanguageCode = languageProvider.languageCode;
+      _initializeLiveModel();
       _initializeAudio();
     });
   }
@@ -218,7 +201,7 @@ class _MedAIHelpAssistantViewState extends State<MedAIHelpAssistantView> {
     });
 
     if (!_sessionOpened) {
-      _session = await _liveModel.connect();
+      _session = await _liveModel!.connect();
       _sessionOpened = true;
       unawaited(_processMessagesContinuously(stopSignal: _stopController));
     } else {
